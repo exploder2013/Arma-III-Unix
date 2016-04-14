@@ -39,9 +39,6 @@
     <ClCompile Include="renderManager.cpp">
       <Filter>Source Files\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="D3D9_Menu.cpp">
-      <Filter>Source Files\DirectX</Filter>
-    </ClCompile>
     <ClCompile Include="d3Console.cpp">
       <Filter>Source Files\DirectX</Filter>
     </ClCompile>
@@ -60,15 +57,15 @@
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files\Driver</Filter>
     </ClCompile>
+    <ClCompile Include="D3Menu.cpp">
+      <Filter>Source Files\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="d3Console.h">
-      <Filter>Header Files\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D9_Menu.h">
       <Filter>Header Files\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Drawer.h">
@@ -91,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Header Files\Driver</Filter>
+    </ClInclude>
+    <ClInclude Include="D3Menu.h">
+      <Filter>Header Files\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
