@@ -323,8 +323,8 @@ void killPlayer( LPVOID args ){
 			item->isEnabled		= false;
 			item->itemVal		= "NULL";
 
-			setIndirect( args ); // SAFE PRECAUSIONS
-			setRange( args ); // SAFE PRECAUSIONS
+		//	setIndirect( args ); // SAFE PRECAUSIONS
+		//	setRange( args ); // SAFE PRECAUSIONS
 
 			break;
 		}

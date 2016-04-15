@@ -589,7 +589,7 @@ namespace A2OA
 			return address;
 		}
 		DWORD					getStats(){
-			return m->read<DWORD>( address + 0x1FC );
+			return m->read<DWORD>( address + 0x314 );
 		}
 		D3DXVECTOR3				getPos(){
 			return m->read<D3DXVECTOR3>( m->read<DWORD>( address + 0x18 ) + 0x28 );
@@ -600,11 +600,10 @@ namespace A2OA
 		}
 		void					setPos( D3DXVECTOR3 vec ){
 			m->write<D3DXVECTOR3>(m->read<DWORD>(address + 0x18) + 0x28, vec );
-			/*
-			m->write( m->read<DWORD>( address + 0x18 ) + 0x28, vec.x );
-			m->write( m->read<DWORD>( address + 0x18 ) + 0x2C, vec.y );
-			m->write( m->read<DWORD>( address + 0x18 ) + 0x30, vec.z );
-			*/
+		}
+		void					setOwner(DWORD owner)
+		{
+			m->write<DWORD>( address + 0x314, owner );
 		}
 	};
 
@@ -621,19 +620,19 @@ namespace A2OA
 		}
 	};
 
-	class Munition{
+	class Munition {
 		DWORD address;
 
 	public:
-		Munition( DWORD dwAddress ){
+		Munition(DWORD dwAddress) {
 			address = dwAddress;
 		}
 
-		DWORD getTableSize(){
-			return m->read<DWORD>( address + 0x7E0 );
+		DWORD getTableSize() {
+			return m->read<DWORD>(address + 0xB04);
 		}
-		std::unique_ptr<Ammunition> getTable(){
-			return std::unique_ptr<Ammunition>( new Ammunition( m->read<DWORD>( address + 0x7DC ) ) );
+		std::unique_ptr<Ammunition> getTable() {
+			return std::unique_ptr<Ammunition>(new Ammunition(m->read<DWORD>(address + 0xB00)));
 		}
 	};
 
@@ -779,50 +778,59 @@ namespace A2OA
 		}
 	};
 
-	class World{
+	class World {
 	private:
 
 		// MODIFIED TO ADD BASE TO PTR
-		static DWORD getBase(){
-			try{
-				return m->read<DWORD>( m->getProcessBaseAddress() + worldOffset );
-			} catch( ERROR_MEM e ){
-				console->sendInput( "World: " + to_string(e) );
+		static DWORD getBase() {
+			try {
+				return m->read<DWORD>(m->getProcessBaseAddress() + worldOffset);
+			} catch (ERROR_MEM e) {
+				console->sendInput("World: " + to_string(e));
 				return 0;
 			}
-		} 
+		}
 		DWORD address;
 
 	public:
-		World(){
+		World() {
 			address = this->getBase();
 		}
 
-		std::unique_ptr<EntityTablePtr> getEntityTable( )
+		std::unique_ptr<EntityTablePtr> getEntityTable()
 		{
-			try{
-				return std::unique_ptr<EntityTablePtr>( new EntityTablePtr( m->read<DWORD>( address + 0x884 ) ) );
-			} catch( ERROR_MEM e ){
-				console->sendInput( "Entity table: " + to_string(e) );
-				return std::unique_ptr<EntityTablePtr>( new EntityTablePtr( 0 ) );
+			try {
+				return std::unique_ptr<EntityTablePtr>(new EntityTablePtr(m->read<DWORD>(address + 0x884)));
+			} catch (ERROR_MEM e) {
+				console->sendInput("Entity table: " + to_string(e));
+				return std::unique_ptr<EntityTablePtr>(new EntityTablePtr(0));
 			}
 		}
-		std::unique_ptr<UnitInfo>		getCameraOn(){
-			try{
-				return std::unique_ptr<UnitInfo>( new UnitInfo( m->read<DWORD>( address + 0x1740 ) ) );
-			} catch( ERROR_MEM e ){
-				console->sendInput( "UnitInfo table: " + to_string(e) );
-				return std::unique_ptr<UnitInfo>( new UnitInfo( 0 ) );
+		std::unique_ptr<UnitInfo>		getCameraOn() {
+			try {
+				return std::unique_ptr<UnitInfo>(new UnitInfo(m->read<DWORD>(address + 0x1740)));
+			} catch (ERROR_MEM e) {
+				console->sendInput("UnitInfo table: " + to_string(e));
+				return std::unique_ptr<UnitInfo>(new UnitInfo(0));
 			}
 
 		}
-		std::unique_ptr<Munition>		getMunition( )
+		DWORD							getRealPlayer() {
+			try {
+				return m->read<DWORD>(address + 0x1730);
+			} catch (ERROR_MEM e) {
+				console->sendInput("RealPlayer table: " + to_string(e));
+				return 0;
+			}
+
+		}
+		std::unique_ptr<Munition>		getMunition()
 		{
-			try{
-				return std::unique_ptr<Munition>( new Munition( address ) );
-			} catch( ERROR_MEM e ){
-				console->sendInput( "Munition table: " + to_string(e) );
-				return std::unique_ptr<Munition>( new Munition( 0 ) );
+			try {
+				return std::unique_ptr<Munition>(new Munition(address));
+			} catch (ERROR_MEM e) {
+				console->sendInput("Munition table: " + to_string(e));
+				return std::unique_ptr<Munition>(new Munition(0));
 			}
 		}
 		std::unique_ptr<ScriptTable>	getScriptTable()
@@ -835,10 +843,10 @@ namespace A2OA
 			}
 		}
 
-		static std::unique_ptr<World>	Singleton(){
-			return std::unique_ptr<World>( new World() );
+		static std::unique_ptr<World>	Singleton() {
+			return std::unique_ptr<World>(new World());
 		}
-		DWORD							getWorldBase(){
+		DWORD							getWorldBase() {
 			return address;
 		}
 	};
