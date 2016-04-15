@@ -13,7 +13,7 @@
 #include "d3Console.h"
 #include "Memory.h"
 #include "driverManager.h"
-#include "D3D9_Menu.h"
+#include "D3Menu.h"
 #include "Logger.h"
 
 #pragma comment(lib,"Dwmapi.lib")
@@ -28,7 +28,7 @@ extern bool				displayItems;
 extern rManager*		d3;
 extern d3Console*		console;
 extern Memory*			m;
-extern D3D9Menu			d3d9;
+extern D3Menu			d3d9;
 extern driverManager	dMGR;
 extern Logger			logger;
 extern FileLogger		fileLogger;

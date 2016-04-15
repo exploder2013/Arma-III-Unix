@@ -237,6 +237,7 @@ void killPlayer( LPVOID args ){
 		auto			entityTable = entityTablePtr->getTable();
 		auto			entityTableSize = entityTablePtr->getTableSize();
 
+		
 		auto			Munition = world->getMunition();
 		auto			AmmonutionSize = Munition->getTableSize();
 		auto			AmmonutionTable = Munition->getTable();
@@ -336,7 +337,7 @@ void killPlayer( LPVOID args ){
 				continue;
 
 			auto AmmoStats		= Ammo->getStats();
-			auto locAmmoStats	= m->read<DWORD>( world->getWorldBase() + 0x13A8 );
+			auto locAmmoStats	= world->getRealPlayer();
 
 			if( AmmoStats == locAmmoStats ){ // LOCAL PLAYERS BULLET
 				int reference = m->read<int>( targetBase );
@@ -344,7 +345,8 @@ void killPlayer( LPVOID args ){
 				Ammo->setPos( targetPos );
 				Ammo->setAcceleration( targetAccel );
 
-				m->write(Ammo->getBase() + 0x1FC, targetBase);
+				Ammo->setOwner( targetBase );
+				//m->write(Ammo->getBase() + 0x314, targetBase);
 				m->write(targetBase, (reference + 1));
 			}
 		}

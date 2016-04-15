@@ -12,7 +12,7 @@ Logger			logger;
 FileLogger		fileLogger;
 driverManager	dMGR;
 LPD3DXFONT		font;
-D3D9Menu		d3d9;
+D3Menu			d3;
 
 
 bool				displayTeam			= false;
@@ -72,7 +72,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	if (!console->initilize(d3, hInstance))
 		MessageBox(NULL, L"Couldn't initialize console", NULL, NULL), exit(0);
 
-	if ( !d3d9.initDevice(d3) )
+	if ( !d3d9.Initilize(d3) )
 		MessageBox(NULL, L"Couldn't initialize device", NULL, NULL), exit(0);
 
 	console->sendInput( "Loading virtual driver" );

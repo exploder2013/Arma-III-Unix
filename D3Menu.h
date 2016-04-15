@@ -6,6 +6,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <thread>
+#include <future>
 
 // MY INCLUDES
 #include "renderManager.h"
@@ -22,6 +23,7 @@ typedef struct _MENUITEM {
 	LPVOID	stepCallback;
 	LPVOID	callback;
 	DWORD	color;
+	future<void>	future;
 	bool	isEnabled;
 	bool	threaded;
 	SIZE_T	increment;
@@ -45,7 +47,7 @@ class D3Menu {
 public:
 	D3Menu();
 
-	bool		Initilize( rManager* rMGR );
+	bool		Initilize( rManager* rMGR, DWORD hotKey );
 
 	VOID		render();
 	VOID		handleInput();
@@ -79,6 +81,7 @@ public:
 private:
 
 	VOID		changeValue( DWORD vkCode);
+	VOID		processItems();
 
 	DWORD		fontColor	= D3DCOLOR_ARGB( 255, 0, 0, 180 );
 	rManager*	rMGR		= nullptr;
@@ -86,6 +89,8 @@ private:
 	//IX FONT!
 	SIZE_T		step		= 0;
 	SIZE_T		menuStep	= 0;
+	DWORD		hotKey		= VK_OEM_3;
+
 	BOOL		isOpen		= false;
 
 	SIZE_T		fade		= 255;

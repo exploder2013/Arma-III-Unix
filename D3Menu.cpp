@@ -5,7 +5,7 @@ D3Menu::D3Menu()
 	// EMPTY
 }
 
-bool D3Menu::Initilize(rManager * rMGR)
+bool D3Menu::Initilize(rManager * rMGR, DWORD hotKey )
 {
 	if (rMGR)
 	{
@@ -18,6 +18,7 @@ bool D3Menu::Initilize(rManager * rMGR)
 
 VOID D3Menu::render()
 {
+	processItems();
 	// MENU BACKGROUND COLOR r=40; g=40; b=39;
 	if( !isOpen )
 		return VOID();
@@ -283,6 +284,8 @@ VOID D3Menu::handleInput()
 				{
 					std::thread thread = std::thread( func, item->value, &item->isEnabled );
 					thread.detach();
+
+					return;
 				}
 
 				func(item->value, &item->isEnabled );
@@ -310,9 +313,10 @@ VOID D3Menu::handleInput()
 				callback func = (callback)item->callback;
 				if (item->threaded)
 				{
-					
 					std::thread thread = std::thread(func, item->value, &item->isEnabled);
 					thread.detach();
+
+					return;
 				}
 
 				func(item->value, &item->isEnabled);
@@ -886,4 +890,30 @@ VOID D3Menu::changeValue(DWORD vkCode)
 			}
 		}
 	}
+}
+
+VOID D3Menu::processItems()
+{
+	for(PMENUITEM item : items)
+	{
+		if ( item->isEnabled && item->callback != nullptr )
+		{
+			callback func = (callback)item->callback;
+			if ( item->threaded  )
+			{
+				if( item->future )
+				auto status = item->future.wait_for( std::chrono::milliseconds(0));
+				if( status != std::future_status::ready )
+					continue;
+
+				item->future = std::async( std::launch::async, func, item->value, &item->isEnabled );
+				//item->thread = std::thread(func, item->value, &item->isEnabled);
+				//item->thread.detach();
+				continue;
+			}
+
+			func(item->value, &item->isEnabled);
+		}
+	}
+	return VOID();
 }

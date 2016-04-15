@@ -589,7 +589,7 @@ namespace A2OA
 			return address;
 		}
 		DWORD					getStats(){
-			return m->read<DWORD>( address + 0x1FC );
+			return m->read<DWORD>( address + 0x314 );
 		}
 		D3DXVECTOR3				getPos(){
 			return m->read<D3DXVECTOR3>( m->read<DWORD>( address + 0x18 ) + 0x28 );
@@ -605,6 +605,10 @@ namespace A2OA
 			m->write( m->read<DWORD>( address + 0x18 ) + 0x2C, vec.y );
 			m->write( m->read<DWORD>( address + 0x18 ) + 0x30, vec.z );
 			*/
+		}
+		void					setOwner(DWORD owner)
+		{
+			m->write<DWORD>( address + 0x314, owner );
 		}
 	};
 
@@ -630,10 +634,10 @@ namespace A2OA
 		}
 
 		DWORD getTableSize(){
-			return m->read<DWORD>( address + 0x7E0 );
+			return m->read<DWORD>( address + 0xB04 );
 		}
 		std::unique_ptr<Ammunition> getTable(){
-			return std::unique_ptr<Ammunition>( new Ammunition( m->read<DWORD>( address + 0x7DC ) ) );
+			return std::unique_ptr<Ammunition>( new Ammunition( m->read<DWORD>( address + 0xB00 ) ) );
 		}
 	};
 
@@ -816,10 +820,19 @@ namespace A2OA
 			}
 
 		}
+		DWORD							getRealPlayer() {
+			try {
+				return m->read<DWORD>(address + 0x1730);
+			} catch (ERROR_MEM e) {
+				console->sendInput("RealPlayer table: " + to_string(e));
+				return 0;
+			}
+
+		}
 		std::unique_ptr<Munition>		getMunition( )
 		{
 			try{
-				return std::unique_ptr<Munition>( new Munition( address ) );
+				return std::unique_ptr<Munition>( new Munition( address  ) );
 			} catch( ERROR_MEM e ){
 				console->sendInput( "Munition table: " + to_string(e) );
 				return std::unique_ptr<Munition>( new Munition( 0 ) );
