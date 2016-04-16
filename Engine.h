@@ -592,14 +592,14 @@ namespace A2OA
 			return m->read<DWORD>( address + 0x314 );
 		}
 		D3DXVECTOR3				getPos(){
-			return m->read<D3DXVECTOR3>( m->read<DWORD>( address + 0x18 ) + 0x28 );
+			return m->read<D3DXVECTOR3>( m->read<DWORD>( address + 0x68 ) + 0x28 );
 		}
 
 		void					setAcceleration(D3DXVECTOR3 vec) {
-			m->write<D3DXVECTOR3>(m->read<DWORD>(address + 0x18) + 0x48, vec );
+			m->write<D3DXVECTOR3>(m->read<DWORD>(address + 0x68) + 0x48, vec );
 		}
 		void					setPos( D3DXVECTOR3 vec ){
-			m->write<D3DXVECTOR3>(m->read<DWORD>(address + 0x18) + 0x28, vec );
+			m->write<D3DXVECTOR3>(m->read<DWORD>(address + 0x68) + 0x28, vec );
 		}
 		void					setOwner(DWORD owner)
 		{

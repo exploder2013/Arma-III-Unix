@@ -251,5 +251,46 @@ void inputHanlder(char* command)
 		} else {
 			cout << "find - [args] - 1. TYPE (weapon, consumable) 2. ITEM NAME" << endl;
 		}
+	} else if (!strcmp(splitString.at(0).c_str(), "kill"))
+	{
+		static std::future<VOID>	future;
+		static bool					run		= true;
+
+		if (future.valid()) {
+			auto status = future.wait_for(std::chrono::milliseconds(0));
+			if (status != std::future_status::ready) {
+				run = false;
+				cout << "Stopping KILL mode!" << endl;
+
+				return VOID();
+			} else {
+				run = true;
+			}
+		}
+
+		if (splitString.size() > 2)
+		{
+			if (splitString.at(1).length() > 0 && splitString.at(2).length() > 0)
+			{
+				
+				try {
+					INT targetIndex = stoi( splitString.at(1) );
+					INT frameIndex	= stoi( splitString.at(2) );
+
+					future = std::async( killPlayerConsole, targetIndex, frameIndex, &run );
+					
+				} catch (std::exception e)
+				{
+					cout << "Error: couldn't convert input to numbers" << endl;
+				}
+			} else {
+				cout << "kill - [args] - 1. TARGET INDEX | 2. FRAME INDEX " << endl;
+			}
+		} else {
+			cout << "kill - [args] - 1. TARGET INDEX | 2. FRAME INDEX" << endl;
+		}
+	} else if (!strcmp(splitString.at(0).c_str(), "players"))
+	{
+		listPlayersConsole();
 	}
 }

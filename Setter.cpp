@@ -217,25 +217,26 @@ void resetStats( LPVOID args ){
 	item->isEnabled = false;
 }
 
-void killPlayer( LPVOID args ){
-	D3D9_item* item = (D3D9_item*) args;
-	Memory* m = (Memory*) item->arguments;
+void killPlayer(LPVOID args) {
+	D3D9_item* item = (D3D9_item*)args;
+	Memory* m = (Memory*)item->arguments;
 
-	string			targetName			= item->itemVal;;	
-	DWORD			targetBase			= 0;
-	bool			isTargeted			= false;
-	D3DXVECTOR3		targetPos			= D3DXVECTOR3( 0,0,0 );
-	D3DXVECTOR3		targetAccel			= D3DXVECTOR3( 0,0,0 );
+	string			targetName = item->itemVal;
+	DWORD			targetBase = 0;
+	bool			isTargeted = false;
+	D3DXVECTOR3		targetPos = D3DXVECTOR3(0, 0, 0);
+	D3DXVECTOR3		targetAccel = D3DXVECTOR3(0, 0, 0);
 
-	while( item->isEnabled )
+	while (item->isEnabled)
 	{
 		auto			world = World::Singleton();
 		auto			locPlayer = world->getCameraOn()->getUnit()->getPlayer();
-		auto			transData = TransData::Singleton( );
+		auto			transData = TransData::Singleton();
 
 		auto			entityTablePtr = world->getEntityTable();
 		auto			entityTable = entityTablePtr->getTable();
 		auto			entityTableSize = entityTablePtr->getTableSize();
+
 
 		auto			Munition = world->getMunition();
 		auto			AmmonutionSize = Munition->getTableSize();
@@ -246,58 +247,58 @@ void killPlayer( LPVOID args ){
 		auto			scoreboardSize = scoreboard->getTableSize();
 		auto			scoreboardTable = scoreboard->getScoreboardTable();
 
-		isTargeted = false;
-		for( DWORD i = 0; i < entityTableSize; i++ ){
-			if( isTargeted )
+		isTargeted = false; //FALSE
+		for (DWORD i = 0; i < entityTableSize; i++) {
+			if (isTargeted)
 				break;
 
-			auto UnitInfo = entityTable->getUnitInfoById( i );
+			auto UnitInfo = entityTable->getUnitInfoById(i);
 			auto Unit = UnitInfo->getUnit();
 			auto UnitBase = Unit->getBase();
-			if( UnitBase ){
-				if( Unit->getID() > 1 ){ // PLAYER
-					for( INT l = 0; l < scoreboardSize; l++ ){
-						auto scoreboardEntity = scoreboardTable->getEntryById( l );
-						if( scoreboardEntity->getID() == Unit->getID() ){
-							if( scoreboardEntity->getString()->getString() == targetName ){
-								targetBase	= UnitInfo->getBase();
-								targetPos	= Unit->getPlayer()->getPos();
-								targetAccel	= Unit->getPlayer()->getAccerelation();
+			if (UnitBase) {
+				if (Unit->getID() > 1) { // PLAYER > 1 
+					for (INT l = 0; l < scoreboardSize; l++) {
+						auto scoreboardEntity = scoreboardTable->getEntryById(l);
+						if (scoreboardEntity->getID() == Unit->getID()) {
+							if (scoreboardEntity->getString()->getString() == targetName) {
+								targetBase = UnitInfo->getBase();
+								targetPos = Unit->getPlayer()->getPos();
+								targetAccel = Unit->getPlayer()->getAccerelation();
 
 								isTargeted = true;
 								/* SETTING VECTOR TO HIT TARGET */
-								
-								D3DXVec3Normalize( &targetAccel, &targetAccel );
-								D3DXVec3Subtract( &targetPos, &targetPos, &targetAccel );
+
+								D3DXVec3Normalize(&targetAccel, &targetAccel);
+								D3DXVec3Subtract(&targetPos, &targetPos, &targetAccel);
 
 								if (targetAccel != D3DXVECTOR3(0, 0, 0)) {
-									D3DXVec3Scale( &targetAccel, &targetAccel, 1000.0f );
+									D3DXVec3Scale(&targetAccel, &targetAccel, 1000.0f);
 								} else {
-									D3DXVec3Scale( &targetAccel, &D3DXVECTOR3(1.5f,1.5f,1.5f), 1000.0f );
+									D3DXVec3Scale(&targetAccel, &D3DXVECTOR3(1.5f, 1.5f, 1.5f), 1000.0f);
 								}
 
-								isTargeted	= true;
+								isTargeted = true;
 								break;
-								
+
 							}
 						}
 					}
-				} else if( Unit->getID() == 0 ){
+				} else if (Unit->getID() == 0) {
 					auto VehicleInfo = UnitInfo->getVehicle();
 					auto Entity = VehicleInfo->getDriver();
 
-					if( Entity->getBase() && Entity->getID() > 1 ){
-						for( INT l = 0; l < scoreboardSize; l++ ){
-							auto scoreboardEntity = scoreboardTable->getEntryById( l );
-							if( scoreboardEntity->getID() == Entity->getID() ){
-								if( scoreboardEntity->getString( )->getString( ) == targetName ){
-									targetBase	= UnitInfo->getBase();
-									targetPos	= VehicleInfo->getVehicle()->getPos();
-									targetAccel	= VehicleInfo->getVehicle()->getAccerelation();
+					if (Entity->getBase() && Entity->getID() > 1) {
+						for (INT l = 0; l < scoreboardSize; l++) {
+							auto scoreboardEntity = scoreboardTable->getEntryById(l);
+							if (scoreboardEntity->getID() == Entity->getID()) {
+								if (scoreboardEntity->getString()->getString() == targetName) {
+									targetBase = UnitInfo->getBase();
+									targetPos = VehicleInfo->getVehicle()->getPos();
+									targetAccel = VehicleInfo->getVehicle()->getAccerelation();
 
 									isTargeted = true;
 									/* SETTING VECTOR TO HIT TARGET */
-									
+
 									D3DXVec3Normalize(&targetAccel, &targetAccel);
 									D3DXVec3Subtract(&targetPos, &targetPos, &targetAccel);
 
@@ -309,7 +310,7 @@ void killPlayer( LPVOID args ){
 
 									isTargeted = true;
 									break;
-									
+
 								}
 							}
 						}
@@ -318,34 +319,33 @@ void killPlayer( LPVOID args ){
 			}
 		}
 
-		if( !isTargeted || !targetBase ){ // IF CAN'T FIND TARGET ANYMORE
-			item->value			= 0;
-			item->isEnabled		= false;
-			item->itemVal		= "NULL";
+		if (!isTargeted || !targetBase) { // IF CAN'T FIND TARGET ANYMORE
+			item->value = 0;
+			item->isEnabled = false;
+			item->itemVal = "NULL";
 
-		//	setIndirect( args ); // SAFE PRECAUSIONS
-		//	setRange( args ); // SAFE PRECAUSIONS
+			//setIndirect(args); // SAFE PRECAUSIONS
+			//setRange(args); // SAFE PRECAUSIONS
 
 			break;
 		}
 
 
-		for( SIZE_T i = 0; i < AmmonutionSize; i++ ){
-			auto Ammo			= AmmonutionTable->getAmmoById( i );
-			if( !Ammo->getBase() )
+		for (SIZE_T i = 0; i < AmmonutionSize; i++) {
+			auto Ammo = AmmonutionTable->getAmmoById(i);
+			if (!Ammo->getBase())
 				continue;
 
-			auto AmmoStats		= Ammo->getStats();
-			auto locAmmoStats	= m->read<DWORD>( world->getWorldBase() + 0x13A8 );
+			auto AmmoStats = Ammo->getStats();
+			auto locAmmoStats = world->getRealPlayer();
+			if (AmmoStats == locAmmoStats) { // LOCAL PLAYERS BULLET
+				int reference = m->read<int>(targetBase);
 
-			if( AmmoStats == locAmmoStats ){ // LOCAL PLAYERS BULLET
-				int reference = m->read<int>( targetBase );
-				
-				Ammo->setPos( targetPos );
-				Ammo->setAcceleration( targetAccel );
+				Ammo->setAcceleration(D3DXVECTOR3(0, 1000, 0));
+				Ammo->setPos(targetPos);
 
-				m->write(Ammo->getBase() + 0x1FC, targetBase);
-				m->write(targetBase, (reference + 1));
+				Ammo->setOwner(targetBase);
+				m->write(reference, (reference + 1));
 			}
 		}
 	}
@@ -968,4 +968,174 @@ void setConsumable( LPVOID args ){
 	} else {
 		setConsumable( args );
 	}
+}
+
+void listPlayersConsole( )
+{
+	auto			world = World::Singleton();
+
+	if (!world->getCameraOn()->getUnit()->getBase())
+		return;
+
+	auto			locPlayer = world->getCameraOn()->getUnit()->getPlayer();
+	if (!locPlayer->getBase())
+		return;
+
+	auto			entityTablePtr = world->getEntityTable();
+	auto			entityTable = entityTablePtr->getTable();
+	auto			entityTableSize = entityTablePtr->getTableSize();
+
+	auto			networkMgr = NetworkManager::Singleton();
+	auto			scoreboard = networkMgr->getScoreboard();
+	auto			scoreboardSize = scoreboard->getTableSize();
+	auto			scoreboardTable = scoreboard->getScoreboardTable();
+
+	for (DWORD i = 0; i < entityTableSize; i++) {
+
+		auto UnitInfo = entityTable->getUnitInfoById(i);
+		auto Unit = UnitInfo->getUnit();
+		auto UnitBase = Unit->getBase();
+
+		DWORD ID = Unit->getID();
+
+		if (UnitBase) {
+			if (ID > 1 && ID != 1065353216) { // PLAYER
+
+				auto Entity = Unit->getPlayer();
+
+				if (Entity->getBase() == locPlayer->getBase())
+					continue;
+
+				for (INT l = 0; l < scoreboardSize; l++) {
+					auto scoreboardEntity = scoreboardTable->getEntryById(l);
+					if (scoreboardEntity->getID() == ID) {
+						string plyrName = scoreboardEntity->getString()->getString();
+						cout << "[" << i << "]" << "[" << plyrName << "]" << endl;
+						break;
+					}
+				}
+			} else if (ID == 1065353216) {
+				auto VehicleInfo = UnitInfo->getVehicle();
+				auto Entity = VehicleInfo->getDriver();
+				auto Vehicle = VehicleInfo->getVehicle();
+
+					if (Entity->getBase() && displayCars) {
+
+						if (VehicleInfo->getBase() == locPlayer->getBase())
+							continue;
+
+						ID = Entity->getID();
+						if (ID == 1) {
+						} else {
+							for (INT l = 0; l < scoreboardSize; l++) {
+								auto scoreboardEntity = scoreboardTable->getEntryById(l);
+
+								if (scoreboardEntity->getID() == ID) {
+									string plyrName = scoreboardEntity->getString()->getString();
+									cout << "[" << i << "]" << "[CAR]" << "[" << plyrName << "]" << endl;
+									break;
+								}
+							}
+						}
+					}
+			}
+		}
+	}
+}
+
+void killPlayerConsole(INT targetIndex, INT frameIndex, bool* run ) {
+
+	auto			world			= World::Singleton();
+	auto			locPlayer		= world->getCameraOn()->getUnit()->getPlayer();
+	auto			transData		= TransData::Singleton();
+
+	auto			entityTablePtr	= world->getEntityTable();
+	auto			entityTable		= entityTablePtr->getTable();
+	auto			entityTableSize = entityTablePtr->getTableSize();
+
+	auto			networkMgr		= NetworkManager::Singleton();
+	auto			scoreboard		= networkMgr->getScoreboard();
+	auto			scoreboardSize	= scoreboard->getTableSize();
+	auto			scoreboardTable = scoreboard->getScoreboardTable();
+
+	auto TargetInfo		= entityTable->getUnitInfoById(targetIndex);
+	auto Target			= TargetInfo->getUnit();
+	auto TargetBase		= Target->getBase();
+	auto TargetID		= Target->getID();
+
+	auto FrameInfo		= entityTable->getUnitInfoById(frameIndex);
+	auto Frame			= FrameInfo->getUnit();
+	auto FrameBase		= Frame->getBase();
+	auto FrameID		= Frame->getID();
+	auto FramePtr		= FrameInfo->getBase();
+
+	string targetName, frameName;
+
+	// GETTING PLAYER NAMES
+	if (TargetBase && FrameBase)
+	{
+		for (INT i = 0; i < scoreboardSize; i++)
+		{
+			if (targetName.length() > 0 && frameName.length() > 0)
+				break;
+
+			auto scoreboardEntity = scoreboardTable->getEntryById(i);
+			if (scoreboardEntity->getID() == TargetID) {
+				targetName = scoreboardEntity->getString()->getString();
+			} else if (scoreboardEntity->getID() == FrameID) {
+				frameName = scoreboardEntity->getString()->getString();
+			}
+		}
+	} else {
+		cout << "Invalid target ID's passed!" << endl;
+		return;
+	}
+	cout << "Kill mode activated: TARGET:[" << targetName << "] FRAME:[" << frameName << "]" << endl;
+
+	// EVERYTHING WENT FINE, STARTING
+	while( *run )
+	{
+		auto			Munition		= world->getMunition();
+		auto			AmmonutionSize	= Munition->getTableSize();
+		auto			AmmonutionTable = Munition->getTable();
+
+		for (SIZE_T i = 0; i < AmmonutionSize; i++) {
+
+			auto Ammo = AmmonutionTable->getAmmoById(i);
+			if (!Ammo->getBase())
+				continue;
+
+			auto BltOwner		= Ammo->getStats();
+			auto LocBtlOwner	= world->getRealPlayer();
+
+			if (BltOwner == LocBtlOwner) { // LOCAL PLAYERS BULLET
+				int reference = m->read<int>(FramePtr);
+
+				auto targetAccel	= Target->getPlayer()->getAccerelation();
+				D3DXVECTOR3 TA;
+				auto targetPos		= Target->getPlayer()->getPos();
+
+				D3DXVec3Normalize(&targetAccel, &targetAccel);
+				D3DXVec3Subtract(&targetPos, &targetPos, &targetAccel);
+
+				if (targetAccel != D3DXVECTOR3(0, 0, 0)) {
+					D3DXVec3Scale(&TA, &targetAccel, 3.0f);
+					D3DXVec3Scale(&targetAccel, &targetAccel, 1000.0f);
+				} else {
+					TA = D3DXVECTOR3( 0, -0.75f, 0 );
+					D3DXVec3Scale(&targetAccel, &D3DXVECTOR3(0, 1.5f, 0), 1000.0f);
+				}
+				/*
+				auto TargetPos		= Target->getPlayer()->getPos();
+				*/
+				Ammo->setAcceleration( targetAccel );
+				Ammo->setPos( targetPos - TA + D3DXVECTOR3(0,1,0) );
+				
+
+				Ammo->setOwner(FramePtr);
+				m->write(reference, (reference + 1));
+			}
+		}
+	}
+
 }
