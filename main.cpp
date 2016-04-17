@@ -88,54 +88,29 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		console->sendInput( "Driver created with name: FMGR! Unloading virtual driver." );
 	}
 
-	d3d9.addMenu("Exploder's Menu", 10, 10, VK_OEM_PLUS);
-
-	d3d9.addTab("Vision");
-	d3d9.addTab("Position");
-	d3d9.addTab("Stats");
-	d3d9.addTab("Frames");
-	d3d9.addTab("Other");
-
+	d3d9.createMenu( "Arma III menu", NULL );
 
 	// VISION
-	d3d9.addSlider(d3d9.addItem("XRAY", 10000, "1000m", render, m, true, false, 0), "XRAY", 50000);
-
-	d3d9.addCheckBox("Players", &displayPlayers, 0);
-
-	d3d9.addCheckBox("Populated Cars", &displayCars, 0);
-	d3d9.addCheckBox("Empty Cars", &displayEmptyCars, 0);
-	d3d9.addCheckBox("Show only other teams", &displayTeam, 0);
+	PMENUENTRY vision = d3d9.createMenu( "Vision", NULL );
+	d3d9.createItem( vision,"XRAY", new FLOAT(1000), NULL, 100, VAR_TYPE::T_FLOAT, render, nullptr, true );
+	d3d9.createToggle( vision, "Display players", &displayPlayers, NULL, nullptr, false );
+	d3d9.createToggle( vision, "Cars", &displayCars, NULL, nullptr, false );
+	d3d9.createToggle( vision, "Empty cars", &displayEmptyCars, NULL, nullptr, false );
+	d3d9.createToggle( vision, "Other teams", &displayTeam, NULL, nullptr, false );
 
 	//POSITION
-	d3d9.addSlider(d3d9.addItem("Teleport", 1, "1m", teleport, m, false, true, 1), "Teleport", 10);
-	d3d9.addSlider(d3d9.addItem("TeleportUnsafe", 1, "1m", teleportUnsafe, m, false, true, 1), "Teleport Unsafe", 10);
-
-	//STATS
-	d3d9.addSlider(d3d9.addItem("Indirect Damage", 1, "1m", setIndirect, m, false, false, 2), "Indirect Damage", 500);
-	d3d9.addSlider(d3d9.addItem("Indirect Range", 1, "1m", setRange, m, false, false, 2), "Indirect Range", 200);
-	d3d9.addSlider(d3d9.addItem("Damage", 1, "1", setDamage, m, false, false, 2), "Damage", 50);
-
-	d3d9.addItem("Reset Stats", 0, "NULL", resetStats, m, false, false, 2);
-	d3d9.addItem("TEST", 0, "NULL", displayScripts, m, false, false, 2);
+	d3d9.createItem("Teleport",new INT(1), NULL, 1, VAR_TYPE::T_INT, teleport, nullptr, true ); 
+	d3d9.createItem("Unsafe Teleport",new INT(1), NULL, 1, VAR_TYPE::T_INT, teleportUnsafe, nullptr, true ); 
 
 	//FRAMES
-	d3d9.addTextBox(d3d9.addItem("Frame Player", 0, "NULL", framePlayer, m, false, true, 3), "Frame Player", setPlayer);
-	d3d9.addTextBox(d3d9.addItem("Kill Player", 0, "NULL", killPlayer, m, false, true, 3), "Kill Player", setPlayer);
+	d3d9.createItem( "Frame Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING,framePlayer, setPlayer, true );
+	d3d9.createItem( "Kill Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING,killPlayer, setPlayer, true );
 
 	//OTHER
-	d3d9.addTextBox(d3d9.addItem("Spawn Weapon", 0, "NULL", spawnWeapon, m, false, false, 4), "Weapon", setWeapon);
-	d3d9.addTextBox(d3d9.addItem("Spawn Consumable", 0, "NULL", spawnAmmunation, m, false, false, 4), "Consumable", setConsumable);
-	d3d9.addTextBox(d3d9.addItem("Spawn Ammo", 0, "NULL", spawnAmmunation, m, false, false, 4), "Ammo", setAmmunation);
-
-	d3d9.addItem("Unlock Vehicle", 0, "NULL", unlockCar, m, false, false, 4);
-	d3d9.addItem("CleanUP", 0, "NULL", cleanUP, m, false, false, 4);
-	d3d9.addItem("ClearFile", 0, "NULL", clearFile, m, false, false, 4);
+	d3d9.createItem( "Open Vehicle", NULL, NULL, 0, VAR_TYPE::T_INT, unlockCar, nullptr, false );
 
 	logger.registerInput(inputHanlder);
 	logger.handleInput();
-
-	d3d9.createFont( "Arial", 14, 0, &font );
-	//displayScripts();
 
 	console->sendInput( "Process ready!" );
 

@@ -275,21 +275,7 @@ VOID D3Menu::handleInput()
 				bool* value = (bool*)item->value;
 				*value = !*value;
 			}
-
-			if (item->callback != nullptr)
-			{
-				item->isEnabled = true;
-				callback func = (callback)item->callback;
-				if (item->threaded)
-				{
-					std::thread thread = std::thread( func, item->value, &item->isEnabled );
-					thread.detach();
-
-					return;
-				}
-
-				func(item->value, &item->isEnabled );
-			}
+			item->isEnabled = true;
 		}
 
 		if (step < menus.size())
@@ -306,21 +292,7 @@ VOID D3Menu::handleInput()
 				bool* value = (bool*)item->value;
 				*value = !*value;
 			}
-
-			if (item->callback != nullptr)
-			{
-				item->isEnabled = true;
-				callback func = (callback)item->callback;
-				if (item->threaded)
-				{
-					std::thread thread = std::thread(func, item->value, &item->isEnabled);
-					thread.detach();
-
-					return;
-				}
-
-				func(item->value, &item->isEnabled);
-			}
+			item->isEnabled = true;
 		}
 	}
 
@@ -901,19 +873,43 @@ VOID D3Menu::processItems()
 			callback func = (callback)item->callback;
 			if ( item->threaded  )
 			{
-				if( item->future )
-				auto status = item->future.wait_for( std::chrono::milliseconds(0));
-				if( status != std::future_status::ready )
-					continue;
+				if (item->future.valid()) {
+					auto status = item->future.wait_for(std::chrono::milliseconds(0));
+					if (status != std::future_status::ready)
+						continue;
+				}
 
 				item->future = std::async( std::launch::async, func, item->value, &item->isEnabled );
-				//item->thread = std::thread(func, item->value, &item->isEnabled);
-				//item->thread.detach();
 				continue;
 			}
 
 			func(item->value, &item->isEnabled);
 		}
 	}
+
+	for (PMENUENTRY entry : menus)
+	{
+		for (PMENUITEM item : entry->items)
+		{
+			if (item->isEnabled && item->callback != nullptr)
+			{
+				callback func = (callback)item->callback;
+				if (item->threaded)
+				{
+					if (item->future.valid()) {
+						auto status = item->future.wait_for(std::chrono::milliseconds(0));
+						if (status != std::future_status::ready)
+							continue;
+					}
+
+					item->future = std::async(std::launch::async, func, item->value, &item->isEnabled);
+					continue;
+				}
+
+				func(item->value, &item->isEnabled);
+			}
+		}
+	}
+
 	return VOID();
 }
