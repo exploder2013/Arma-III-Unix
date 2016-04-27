@@ -49,9 +49,9 @@ namespace A2OA
 {
 
 	namespace{
-		DWORD		transOffsets[ 2 ]	= { 0x196D074, 0xE4 }; // 0x196D074 + base
-		DWORD		worldOffset			= 0x1956BB0; //0x1956BB0 + base 
-		DWORD		scoreboardOffset	= 0x1942598; //0x1942598 + base
+		DWORD		transOffsets[ 2 ]	= { 0x17C6B64, 0xE4 }; // 0x196D074 + base
+		DWORD		worldOffset			= 0x17B0110; //0x1956BB0 + base 
+		DWORD		scoreboardOffset	= 0x179F570; //0x1942598 + base
 		DWORD		weaponTableOffset	= 0xDAD7E8;
 	}
 
@@ -464,7 +464,7 @@ namespace A2OA
 		}
 
 		void			unlock(){
-			m->write( address + 0xA98, 1 );
+			m->write<int>( address + 0xB88, 1 );
 		}
 		DWORD			getBase(){
 			return address;
@@ -473,7 +473,7 @@ namespace A2OA
 		std::unique_ptr<ArmaString>	getEntityName(){
 			try
 			{
-				DWORD base = m->read<DWORD>( m->read<DWORD>( address + 0x3C ) + 0x30 );
+				DWORD base = m->read<DWORD>( m->read<DWORD>( address + 0xD8 ) + 0xA2C );
 				return std::unique_ptr<ArmaString>( new ArmaString(base) );
 			} catch (ERROR_MEM e)
 			{
@@ -483,7 +483,7 @@ namespace A2OA
 
 		std::unique_ptr<Unit> getDriver(){
 			try {
-				return std::unique_ptr<Unit>( new Unit( m->read<DWORD>( address + 0xBA0 ) ) );
+				return std::unique_ptr<Unit>( new Unit( m->read<DWORD>( address + 0xBA4 ) ) );
 			} catch (ERROR_MEM e) {
 				console->sendInput("Unit table: " + to_string(e));
 				return std::unique_ptr<Unit>(new Unit(0));
@@ -629,10 +629,10 @@ namespace A2OA
 		}
 
 		DWORD getTableSize() {
-			return m->read<DWORD>(address + 0xB04);
+			return m->read<DWORD>(address + 0xCF4);
 		}
 		std::unique_ptr<Ammunition> getTable() {
-			return std::unique_ptr<Ammunition>(new Ammunition(m->read<DWORD>(address + 0xB00)));
+			return std::unique_ptr<Ammunition>(new Ammunition(m->read<DWORD>(address + 0xCF0))); // B00
 		}
 	};
 
@@ -800,7 +800,7 @@ namespace A2OA
 		std::unique_ptr<EntityTablePtr> getEntityTable()
 		{
 			try {
-				return std::unique_ptr<EntityTablePtr>(new EntityTablePtr(m->read<DWORD>(address + 0x884)));
+				return std::unique_ptr<EntityTablePtr>(new EntityTablePtr(m->read<DWORD>(address + 0xA54)));
 			} catch (ERROR_MEM e) {
 				console->sendInput("Entity table: " + to_string(e));
 				return std::unique_ptr<EntityTablePtr>(new EntityTablePtr(0));
@@ -808,7 +808,7 @@ namespace A2OA
 		}
 		std::unique_ptr<UnitInfo>		getCameraOn() {
 			try {
-				return std::unique_ptr<UnitInfo>(new UnitInfo(m->read<DWORD>(address + 0x1740)));
+				return std::unique_ptr<UnitInfo>(new UnitInfo(m->read<DWORD>(address + 0x1920)));
 			} catch (ERROR_MEM e) {
 				console->sendInput("UnitInfo table: " + to_string(e));
 				return std::unique_ptr<UnitInfo>(new UnitInfo(0));
@@ -817,7 +817,7 @@ namespace A2OA
 		}
 		DWORD							getRealPlayer() {
 			try {
-				return m->read<DWORD>(address + 0x1730);
+				return m->read<DWORD>(address + 0x1930);
 			} catch (ERROR_MEM e) {
 				console->sendInput("RealPlayer table: " + to_string(e));
 				return 0;

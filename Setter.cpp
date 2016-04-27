@@ -970,8 +970,9 @@ void setConsumable( LPVOID args ){
 	}
 }
 
-void listPlayersConsole( )
+void listPlayersConsole( string comp )
 {
+	cout << "Searching for players that include: " << comp << endl;
 	auto			world = World::Singleton();
 
 	if (!world->getCameraOn()->getUnit()->getBase())
@@ -1009,8 +1010,13 @@ void listPlayersConsole( )
 				for (INT l = 0; l < scoreboardSize; l++) {
 					auto scoreboardEntity = scoreboardTable->getEntryById(l);
 					if (scoreboardEntity->getID() == ID) {
-						string plyrName = scoreboardEntity->getString()->getString();
-						cout << "[" << i << "]" << "[" << plyrName << "]" << endl;
+						if (comp.length() > 0 && scoreboardEntity->getString()->getString().find(comp) != string::npos) {
+							string plyrName = scoreboardEntity->getString()->getString();
+							cout << "[" << i << "]" << "[" << plyrName << "]" << endl;
+						} else if( comp.length() == 0 ) {
+							string plyrName = scoreboardEntity->getString()->getString();
+							cout << "[" << i << "]" << "[" << plyrName << "]" << endl;
+						}
 						break;
 					}
 				}
@@ -1031,8 +1037,13 @@ void listPlayersConsole( )
 								auto scoreboardEntity = scoreboardTable->getEntryById(l);
 
 								if (scoreboardEntity->getID() == ID) {
-									string plyrName = scoreboardEntity->getString()->getString();
-									cout << "[" << i << "]" << "[CAR]" << "[" << plyrName << "]" << endl;
+									if (comp.length() > 0 && scoreboardEntity->getString()->getString().find( comp ) != string::npos ) {
+										string plyrName = scoreboardEntity->getString()->getString();
+										cout << "[" << i << "]" << "[CAR]" << "[" << plyrName << "]" << endl;
+									} else if( comp.length() == 0 ){
+										string plyrName = scoreboardEntity->getString()->getString();
+										cout << "[" << i << "]" << "[CAR]" << "[" << plyrName << "]" << endl;
+									}
 									break;
 								}
 							}
@@ -1043,99 +1054,202 @@ void listPlayersConsole( )
 	}
 }
 
-void killPlayerConsole(INT targetIndex, INT frameIndex, bool* run ) {
+void killPlayerConsole(std::vector<int> targetList, INT frameIndex, bool* run) {
 
-	auto			world			= World::Singleton();
-	auto			locPlayer		= world->getCameraOn()->getUnit()->getPlayer();
-	auto			transData		= TransData::Singleton();
-
-	auto			entityTablePtr	= world->getEntityTable();
-	auto			entityTable		= entityTablePtr->getTable();
-	auto			entityTableSize = entityTablePtr->getTableSize();
-
-	auto			networkMgr		= NetworkManager::Singleton();
-	auto			scoreboard		= networkMgr->getScoreboard();
-	auto			scoreboardSize	= scoreboard->getTableSize();
-	auto			scoreboardTable = scoreboard->getScoreboardTable();
-
-	auto TargetInfo		= entityTable->getUnitInfoById(targetIndex);
-	auto Target			= TargetInfo->getUnit();
-	auto TargetBase		= Target->getBase();
-	auto TargetID		= Target->getID();
-
-	auto FrameInfo		= entityTable->getUnitInfoById(frameIndex);
-	auto Frame			= FrameInfo->getUnit();
-	auto FrameBase		= Frame->getBase();
-	auto FrameID		= Frame->getID();
-	auto FramePtr		= FrameInfo->getBase();
-
-	string targetName, frameName;
-
-	// GETTING PLAYER NAMES
-	if (TargetBase && FrameBase)
+	if (targetList.size() == 0)
 	{
-		for (INT i = 0; i < scoreboardSize; i++)
-		{
-			if (targetName.length() > 0 && frameName.length() > 0)
-				break;
-
-			auto scoreboardEntity = scoreboardTable->getEntryById(i);
-			if (scoreboardEntity->getID() == TargetID) {
-				targetName = scoreboardEntity->getString()->getString();
-			} else if (scoreboardEntity->getID() == FrameID) {
-				frameName = scoreboardEntity->getString()->getString();
-			}
-		}
-	} else {
-		cout << "Invalid target ID's passed!" << endl;
+		cout << "Target list array is empty, exiting!" << endl;
 		return;
 	}
-	cout << "Kill mode activated: TARGET:[" << targetName << "] FRAME:[" << frameName << "]" << endl;
+	
+
+	auto			world = World::Singleton();
+	auto			locPlayer = world->getCameraOn()->getUnit()->getPlayer();
+	auto			transData = TransData::Singleton();
+
+	auto			entityTablePtr = world->getEntityTable();
+	auto			entityTable = entityTablePtr->getTable();
+	auto			entityTableSize = entityTablePtr->getTableSize();
+
+	auto			networkMgr = NetworkManager::Singleton();
+	auto			scoreboard = networkMgr->getScoreboard();
+	auto			scoreboardSize = scoreboard->getTableSize();
+	auto			scoreboardTable = scoreboard->getScoreboardTable();
+
+	auto FrameInfo = entityTable->getUnitInfoById(frameIndex);
+	auto Frame = FrameInfo->getUnit();
+	auto FrameBase = Frame->getBase();
+	auto FrameID = Frame->getID();
+	auto FramePtr = FrameInfo->getBase();
+
+	// DEFINING THEM HERE FOR AUTO TYPES
+	auto TargetInfo = entityTable->getUnitInfoById(targetList.at(0));
+	auto Target = TargetInfo->getUnit();
+	auto TargetBase = Target->getBase();
+	auto TargetID = Target->getID();
+
+	
+	for (INT targetIndex : targetList)
+	{
+		TargetInfo = entityTable->getUnitInfoById(targetIndex);
+		Target = TargetInfo->getUnit();
+		TargetBase = Target->getBase();
+		TargetID = Target->getID();
+
+		string targetName, frameName;
+
+		// GETTING PLAYER NAMES
+		if (TargetBase && FrameBase)
+		{
+			if (TargetID == 1065353216 || FrameID == 1065353216) // CAR
+			{
+				auto VehicleInfo = TargetInfo->getVehicle();
+				auto Entity = VehicleInfo->getDriver();
+				auto Vehicle = VehicleInfo->getVehicle();
+
+				if (Entity->getBase()) { //PLAYER IS INSIDE
+
+					if (VehicleInfo->getBase() == locPlayer->getBase())
+						continue;
+
+					DWORD ID = Entity->getID();
+					if (ID == 1) {
+						// BOT
+						cout << "Target car contains a bot as a driver!" << endl;
+					} else {
+
+						for (INT l = 0; l < scoreboardSize; l++)
+						{
+							auto scoreboardEntity = scoreboardTable->getEntryById(l);
+
+							if (scoreboardEntity->getID() == TargetID) {
+								targetName = scoreboardEntity->getString()->getString();
+							} else if (frameName.length() == 0 && scoreboardEntity->getID() == FrameID) {
+								frameName = scoreboardEntity->getString()->getString();
+							}
+						}
+					}
+				}
+			} else { //PLAYER
+				for (INT i = 0; i < scoreboardSize; i++)
+				{
+					auto scoreboardEntity = scoreboardTable->getEntryById(i);
+					if (scoreboardEntity->getID() == TargetID) {
+						targetName = scoreboardEntity->getString()->getString();
+					} else if (frameName.length() == 0 && scoreboardEntity->getID() == FrameID) {
+						frameName = scoreboardEntity->getString()->getString();
+					}
+				}
+			}
+		} else {
+			cout << "Invalid target ID's passed! ID: " << targetIndex << endl;
+			return;
+		}
+
+			cout << "Kill mode activated: TARGET:[" << targetName << "] FRAME:[" << frameName << "]" << endl;
+	}
+
+	
+	TargetInfo = entityTable->getUnitInfoById(targetList.at(0));
+	Target = TargetInfo->getUnit();
+	TargetBase = Target->getBase();
+	TargetID = Target->getID();
+
+	bool killAll = false;
+	if (targetList.at(0) == 0) {
+		killAll = true;
+		cout << "Kill all mode activated!" << endl;
+	}
 
 	// EVERYTHING WENT FINE, STARTING
-	while( *run )
+	DWORD		targetCount = 1;
+	while (*run)
 	{
-		auto			Munition		= world->getMunition();
-		auto			AmmonutionSize	= Munition->getTableSize();
+		if (killAll) {
+			if (targetCount >= entityTableSize)
+			{
+				cout << "Reached the end of player table. Stopping." << endl;
+				return;
+			}
+
+			for (targetCount; targetCount < entityTableSize; targetCount++)
+			{
+				TargetInfo = entityTable->getUnitInfoById( targetCount );
+				Target = TargetInfo->getUnit();
+
+				DWORD ID = Target->getID();
+				if ( ID > 1 && ID != 1065353216 && ID != FrameID ) {
+
+					if (Target->getPlayer()->getBase() == locPlayer->getBase())
+						continue;
+
+					if( Target->isAlive() )
+						continue;
+
+					TargetBase = Target->getBase();
+					break;
+				}
+			}
+			
+			TargetBase = Target->getBase();
+		} else if ( Target->isAlive() && targetCount != targetList.size()) {
+			TargetInfo = entityTable->getUnitInfoById(targetList.at(targetCount));
+			Target = TargetInfo->getUnit();
+
+			if (Target->getID() == 1 || Target->getID() == 1065353216) {
+				cout << "Target invalid or in car. Skipping." << endl;
+
+				targetCount++;
+				continue;
+			}
+
+			TargetBase = Target->getBase();
+			cout << "Target dead, switching to target with ID: [" << targetList.at(targetCount) << "]" << endl;
+
+			targetCount++;
+		} else if ( Target->isAlive() && targetCount == targetList.size()) // REACHED LAST PLAYER
+		{
+			cout << "Killing completed! Stopping kill thread." << endl;
+			return;
+		}
+		
+		auto			Munition = world->getMunition();
+		auto			AmmonutionSize = Munition->getTableSize();
 		auto			AmmonutionTable = Munition->getTable();
 
 		for (SIZE_T i = 0; i < AmmonutionSize; i++) {
-
 			auto Ammo = AmmonutionTable->getAmmoById(i);
 			if (!Ammo->getBase())
 				continue;
 
-			auto BltOwner		= Ammo->getStats();
-			auto LocBtlOwner	= world->getRealPlayer();
+			auto BltOwner = Ammo->getStats();
+			auto LocBtlOwner = world->getRealPlayer();
 
 			if (BltOwner == LocBtlOwner) { // LOCAL PLAYERS BULLET
-				int reference = m->read<int>(FramePtr);
+				int reference = m->read<int>( FramePtr );
 
-				auto targetAccel	= Target->getPlayer()->getAccerelation();
+				auto targetAccel = Target->getPlayer()->getAccerelation();
 				D3DXVECTOR3 TA;
-				auto targetPos		= Target->getPlayer()->getPos();
+				auto targetPos = Target->getPlayer()->getPos();
 
 				D3DXVec3Normalize(&targetAccel, &targetAccel);
 				D3DXVec3Subtract(&targetPos, &targetPos, &targetAccel);
 
 				if (targetAccel != D3DXVECTOR3(0, 0, 0)) {
-					D3DXVec3Scale(&TA, &targetAccel, 3.0f);
+					//D3DXVec3Scale(&TA, &targetAccel, 1.1f);
+					TA = targetAccel;
 					D3DXVec3Scale(&targetAccel, &targetAccel, 1000.0f);
 				} else {
-					TA = D3DXVECTOR3( 0, -0.75f, 0 );
+					TA = D3DXVECTOR3(0,1.0f,0);
 					D3DXVec3Scale(&targetAccel, &D3DXVECTOR3(0, 1.5f, 0), 1000.0f);
 				}
-				/*
-				auto TargetPos		= Target->getPlayer()->getPos();
-				*/
-				Ammo->setAcceleration( targetAccel );
-				Ammo->setPos( targetPos - TA + D3DXVECTOR3(0,1,0) );
-				
+
+				Ammo->setAcceleration(targetAccel);
+				Ammo->setPos(targetPos - TA + D3DXVECTOR3(0, 1.0f, 0));
 
 				Ammo->setOwner(FramePtr);
 				m->write(reference, (reference + 1));
 			}
 		}
 	}
-
 }

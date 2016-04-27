@@ -410,6 +410,7 @@ void tempFunc()
 
 	m.write<char*>( NULL, NULL, NULL );
 
+	m.read<BYTE>				( NULL );
 	m.read<int>					( NULL );
 	m.read<float>				( NULL );
 	m.read<DWORD>				( NULL );

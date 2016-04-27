@@ -90,7 +90,7 @@ void render( LPVOID args )
 				auto Vehicle		= VehicleInfo->getVehicle();
 
 				if( !Entity->getBase() && displayEmptyCars ){
-					plyrName = "Vehicle";/*VehicleInfo->getEntityName()->getString();*/
+					plyrName = VehicleInfo->getEntityName()->getString();
 
 					D3DXVECTOR3 screenCords = transData->WorldToScreen( Vehicle->getPos( ) );
 					if( screenCords.z <= 0.01 )
@@ -116,7 +116,7 @@ void render( LPVOID args )
 					d3d9.drawTextEx( plyrName.c_str( ), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) ) ), D3DCOLOR_RGBA(255,0,0,255), font ); // NAME
 				} else if( Entity->getBase() && displayCars ){
 
-					if( VehicleInfo->getBase() == locPlayer->getBase() )
+					if( VehicleInfo->getDriver()->getBase() == locPlayer->getBase() )
 						continue;
 
 					ID = Entity->getID();
@@ -155,7 +155,7 @@ void render( LPVOID args )
 					float screenY = screenCords.y - drawY;
 
 
-					string carType = "Vehicle";/*VehicleInfo->getEntityName()->getString();*/
+					string carType = VehicleInfo->getEntityName()->getString();
 
 					d3d9.drawTextEx( plyrName.c_str(), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length() ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f )) ), D3DCOLOR_RGBA( 255, 0, 0, 255 ), font );
 					d3d9.drawTextEx( carType.c_str( ), (int) ( screenCords.x - ( distance / 100 ) - carType.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) + 12 ) ), D3DCOLOR_RGBA( 0, 255, 0, 255 ), font );

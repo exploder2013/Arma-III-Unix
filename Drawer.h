@@ -28,9 +28,9 @@ void findConsumable( string data );
 void listConsumable( string data );
 void teleportUnsafe( LPVOID args );
 void spawnAmmunation( LPVOID args );
-void listPlayersConsole( );
+void listPlayersConsole( string comp );
 void spawnWeaponConsole( int id, int amount );
 void spawnConsumableConsole( int id, int amount );
-void killPlayerConsole(INT targetIndex, INT frameIndex, bool* run );
+void killPlayerConsole(vector<int> targetList, INT frameIndex, bool* run );
 
 #endif

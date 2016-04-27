@@ -272,12 +272,20 @@ void inputHanlder(char* command)
 		{
 			if (splitString.at(1).length() > 0 && splitString.at(2).length() > 0)
 			{
-				
 				try {
-					INT targetIndex = stoi( splitString.at(1) );
+					vector<int> targetList;
+
+					
+					stringstream ss( splitString.at(1) );
+					string ID;
+					while (std::getline(ss, ID, ',')) {
+						targetList.push_back( stoi(ID) );
+					}
+					
+					//INT targetIndex = stoi( splitString.at(1) );
 					INT frameIndex	= stoi( splitString.at(2) );
 
-					future = std::async( killPlayerConsole, targetIndex, frameIndex, &run );
+					future = std::async( killPlayerConsole, targetList, frameIndex, &run );
 					
 				} catch (std::exception e)
 				{
@@ -291,6 +299,15 @@ void inputHanlder(char* command)
 		}
 	} else if (!strcmp(splitString.at(0).c_str(), "players"))
 	{
-		listPlayersConsole();
+		try {
+			if (splitString.at(1).length() > 0) {
+				listPlayersConsole( splitString.at(1) );
+			} else {
+				listPlayersConsole( "" );
+			}
+		} catch (std::exception e)
+		{
+			listPlayersConsole( "" );
+		}
 	}
 }
