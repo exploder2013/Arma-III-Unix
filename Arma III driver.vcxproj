@@ -156,7 +156,6 @@
     <ClCompile Include="D3Menu.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="driverManager.cpp" />
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="renderManager.cpp" />

@@ -12,7 +12,7 @@ Logger			logger;
 FileLogger		fileLogger;
 driverManager	dMGR;
 LPD3DXFONT		font;
-D3Menu			d3;
+D3Menu			d3d9;
 
 
 bool				displayTeam			= false;
@@ -72,7 +72,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	if (!console->initilize(d3, hInstance))
 		MessageBox(NULL, L"Couldn't initialize console", NULL, NULL), exit(0);
 
-	if ( !d3d9.Initilize(d3) )
+	if ( !d3d9.Initilize(d3,VK_OEM_3) )
 		MessageBox(NULL, L"Couldn't initialize device", NULL, NULL), exit(0);
 
 	console->sendInput( "Loading virtual driver" );
@@ -103,8 +103,8 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	d3d9.createItem("Unsafe Teleport",new INT(1), NULL, 1, VAR_TYPE::T_INT, teleportUnsafe, nullptr, true ); 
 
 	//FRAMES
-	d3d9.createItem( "Frame Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING,framePlayer, setPlayer, true );
-	d3d9.createItem( "Kill Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING,killPlayer, setPlayer, true );
+	//d3d9.createItem("Frame Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING, framePlayer, setPlayer, true);
+	//d3d9.createItem("Kill Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING, killPlayer, setPlayer, true);
 
 	//OTHER
 	d3d9.createItem( "Open Vehicle", NULL, NULL, 0, VAR_TYPE::T_INT, unlockCar, nullptr, false );

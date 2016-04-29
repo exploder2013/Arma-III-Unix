@@ -2,11 +2,8 @@
 
 using namespace A2OA;
 
-void render( LPVOID args )
+void render( LPVOID value, bool* enabled )
 {
-	D3D9_item*		item	= (D3D9_item*)args;
-	Memory*			m		= (Memory*)item->arguments;
-
 	auto			world		= World::Singleton();
 
 	if( !world->getCameraOn()->getUnit()->getBase() )
@@ -63,7 +60,7 @@ void render( LPVOID args )
 					continue;
 
 				float distance	= transData->Distance3D( Entity->getPos(), locPlayer->getPos() );
-				if( distance > item->value )
+				if( (int)distance > *(int*)value )
 					continue;
 
 				plyrName += " [" + to_string( (int) distance ) + "m]";
@@ -80,8 +77,8 @@ void render( LPVOID args )
 				float screenX = screenCords.x - ( drawX / 2 );
 				float screenY = screenCords.y - drawY;
 				
-				d3d9.drawBox( (int)( screenX - ( distance / 100 ) ), (int)( screenY - ( distance / 90 ) ), (int)( drawX - ( distance / 100 ) ), (int)( drawY - ( distance / 90 ) ), D3DCOLOR_ARGB( 255, 17, 59, 245 ) ); // BOX
-				d3d9.drawTextEx( plyrName.c_str(), (int)(screenCords.x - ( distance / 100.0f ) - plyrName.length( ) ), (int)( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) ) ), D3DCOLOR_RGBA(255,0,0,255), font );
+				d3->drawBox( (int)( screenX - ( distance / 100 ) ), (int)( screenY - ( distance / 90 ) ), (int)( drawX - ( distance / 100 ) ), (int)( drawY - ( distance / 90 ) ), D3DCOLOR_ARGB( 255, 17, 59, 245 ) ); // BOX
+				d3->drawTextEx( plyrName.c_str(), (int)(screenCords.x - ( distance / 100.0f ) - plyrName.length( ) ), (int)( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) ) ), D3DCOLOR_RGBA(255,0,0,255), font );
 
 			} else if( ID == 1065353216 ){ // VEHICLE // FIX !!!
 
@@ -97,7 +94,7 @@ void render( LPVOID args )
 						continue;
 
 					float distance = transData->Distance3D( Vehicle->getPos( ), locPlayer->getPos( ) );
-					if( distance > item->value )
+					if( (int)distance > *(int*)value )
 						continue;
 
 					plyrName += " [" + to_string( (int) distance ) + "m]";
@@ -113,7 +110,7 @@ void render( LPVOID args )
 					float screenX = screenCords.x - ( drawX / 2 );
 					float screenY = screenCords.y - drawY;
 
-					d3d9.drawTextEx( plyrName.c_str( ), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) ) ), D3DCOLOR_RGBA(255,0,0,255), font ); // NAME
+					d3->drawTextEx( plyrName.c_str( ), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) ) ), D3DCOLOR_RGBA(255,0,0,255), font ); // NAME
 				} else if( Entity->getBase() && displayCars ){
 
 					if( VehicleInfo->getBase() == locPlayer->getBase() )
@@ -139,7 +136,7 @@ void render( LPVOID args )
 						continue;
 
 					float distance = transData->Distance3D( Vehicle->getPos(), locPlayer->getPos() );
-					if( distance > item->value )
+					if( (int)distance > *(int*)value )
 						continue;
 
 					plyrName += " [" + to_string( (int)distance ) + "m]";
@@ -157,8 +154,8 @@ void render( LPVOID args )
 
 					string carType = "Vehicle";/*VehicleInfo->getEntityName()->getString();*/
 
-					d3d9.drawTextEx( plyrName.c_str(), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length() ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f )) ), D3DCOLOR_RGBA( 255, 0, 0, 255 ), font );
-					d3d9.drawTextEx( carType.c_str( ), (int) ( screenCords.x - ( distance / 100 ) - carType.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) + 12 ) ), D3DCOLOR_RGBA( 0, 255, 0, 255 ), font );
+					d3->drawTextEx( plyrName.c_str(), (int) ( screenCords.x - ( distance / 100.0f ) - plyrName.length() ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f )) ), D3DCOLOR_RGBA( 255, 0, 0, 255 ), font );
+					d3->drawTextEx( carType.c_str(),d3->calculateWidth( carType.c_str( ), font ) + (int)( screenCords.x - ( distance / 100 ) - carType.length( ) ), (int) ( screenCords.y - ( ( drawY * 1.3f ) + ( distance / 90.0f ) + 12 ) ), D3DCOLOR_RGBA( 0, 255, 0, 255 ), font );
 				}
 				
 			}

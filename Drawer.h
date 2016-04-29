@@ -4,30 +4,19 @@
 #include "main.h"
 #include "Engine.h"
 
-void render( LPVOID args );
-void cleanUP( LPVOID args );
-void findItem( string data );
-void setRange( LPVOID args );
-void teleport( LPVOID args );
-void clearFile( LPVOID args );
-void setPlayer( LPVOID args );
-void setDamage( LPVOID args );
-void setWeapon( LPVOID args );
-void unlockCar( LPVOID args );
-void killPlayer( LPVOID args );
+void render( LPVOID value, bool* enabled );
+void setRange( LPVOID value, bool* enabled );
+void teleport( LPVOID value, bool* enabled );
+void setDamage( LPVOID value, bool* enabled );
+void unlockCar( LPVOID value, bool* enabled );
 void listWeapon( string data );
-void resetStats( LPVOID args );
+void resetStats( LPVOID value, bool* enabled );
 void findWeapon( string data );
-void setIndirect( LPVOID args );
-void framePlayer( LPVOID args );
-void spawnWeapon( LPVOID args );
-void setAmmunation( LPVOID args );
-void setConsumable( LPVOID args );
-void displayScripts( LPVOID args );
+void setIndirect( LPVOID value, bool* enabled );
+void displayScripts( LPVOID value, bool* enabled );
 void findConsumable( string data );
 void listConsumable( string data );
-void teleportUnsafe( LPVOID args );
-void spawnAmmunation( LPVOID args );
+void teleportUnsafe( LPVOID value, bool* enabled );
 void spawnWeaponConsole( int id, int amount );
 void spawnConsumableConsole( int id, int amount );
 
