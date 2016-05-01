@@ -49,8 +49,8 @@ namespace A2OA
 {
 
 	namespace{
-		DWORD		transOffsets[ 2 ]	= { 0x17C6B64, 0xE4 }; // 0x196D074 + base
-		DWORD		worldOffset			= 0x17B0110; //0x1956BB0 + base 
+		DWORD		transOffsets[ 2 ]	= { 0x17C7C2, 0xE4 }; // 0x196D074 + base
+		DWORD		worldOffset			= 0x17B11D0; //0x1956BB0 + base 
 		DWORD		scoreboardOffset	= 0x179F570; //0x1942598 + base
 		DWORD		weaponTableOffset	= 0xDAD7E8;
 	}
