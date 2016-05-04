@@ -15,7 +15,7 @@ using namespace std;
 #define GREEN(x) ((x>>12)&255)
 #define BLUE(x) (x&255)
 
-enum VAR_TYPE { T_INT, T_FLOAT, T_STRING, T_BOOL };
+enum	VAR_TYPE{ _INT, _FLOAT, _STRING, _BOOL };
 
 typedef struct _MENUITEM {
 	string	itemName;
@@ -38,9 +38,14 @@ typedef struct _MENUENTRY {
 	DWORD				color;
 } MENUENTRY, *PMENUENTRY;
 
-typedef VOID(*callback)( LPVOID value, bool* enabled );
-typedef VOID(*stepCallback)( LPVOID value, INT step );// -1 for down +1 for UP
-typedef VOID(*callbackString)(INT* value, string* name, INT step ); // VALUE IS A NUMBER THAT REPRESENTS STEPS THAT HAVE ALREADY BEEN INCREASED BY
+
+namespace
+{
+	typedef	VOID(*callback)(LPVOID value, bool* enabled);
+	typedef VOID(*stepCallback)(LPVOID value, INT step);// -1 for down +1 for UP
+	typedef VOID(*callbackString)(INT* value, string* name, INT step); // VALUE IS A NUMBER THAT REPRESENTS STEPS THAT HAVE ALREADY BEEN INCREASED BY
+}
+
 
 class D3Menu {
 
@@ -52,6 +57,9 @@ public:
 	VOID		render();
 	VOID		handleInput();
 
+	PMENUITEM	createItem(string itemName, LPVOID value, DWORD color, SIZE_T increment, LPVOID callback, LPVOID stepCallback, bool threaded) {
+		return nullptr;
+	}
 	PMENUITEM	createItem( string itemName, LPVOID value, DWORD color, SIZE_T increment, VAR_TYPE type, LPVOID callback, LPVOID stepCallback, bool threaded );
 	PMENUITEM	createItem( string menuName, string itemName, LPVOID value, DWORD color,SIZE_T increment, VAR_TYPE type, LPVOID callback, LPVOID stepCallback, bool threaded );
 	PMENUITEM	createItem( PMENUENTRY menu, string itemName, LPVOID value, DWORD color,SIZE_T increment, VAR_TYPE type, LPVOID callback, LPVOID stepCallback, bool threaded );

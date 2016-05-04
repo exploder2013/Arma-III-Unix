@@ -10,7 +10,6 @@
 
 // MY HEADERS
 #include "renderManager.h"
-#include "d3Console.h"
 #include "Memory.h"
 #include "driverManager.h"
 #include "D3Menu.h"

@@ -79,7 +79,7 @@ private:
 
 	// COMMAND LIST
 	vector<varCommand*>		varCommands;
-	vector<callback*>		callbacks;
+	vector<::callback*>		callbacks;
 	vector<string>			officialCommands;
 
 	// POSITION/SIZE/ATTRIBUTES

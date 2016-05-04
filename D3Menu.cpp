@@ -57,22 +57,22 @@ VOID D3Menu::render()
 			if (item->value != nullptr) {
 				switch (item->type)
 				{
-					case VAR_TYPE::T_INT:
+					case VAR_TYPE::_INT:
 					{
 						text += "<" + to_string(*(INT*)item->value) + ">";
 						break;
 					}
-					case VAR_TYPE::T_FLOAT:
+					case VAR_TYPE::_FLOAT:
 					{
 						text += "<" + to_string(*(FLOAT*)item->value) + ">";
 						break;
 					}
-					case VAR_TYPE::T_STRING:
+					case VAR_TYPE::_STRING:
 					{
 						text += "<" + *(string*)item->value + ">";
 						break;
 					}
-					case VAR_TYPE::T_BOOL:
+					case VAR_TYPE::_BOOL:
 					{
 						BOOL value = *(BOOL*)item->value;
 						string final;
@@ -133,22 +133,22 @@ VOID D3Menu::render()
 			if (item->value != nullptr) {
 				switch (item->type)
 				{
-					case VAR_TYPE::T_INT:
+					case VAR_TYPE::_INT:
 					{
 						text += "<" + to_string(*(INT*)item->value) + ">";
 						break;
 					}
-					case VAR_TYPE::T_FLOAT:
+					case VAR_TYPE::_FLOAT:
 					{
 						text += "<" + to_string(*(FLOAT*)item->value) + ">";
 						break;
 					}
-					case VAR_TYPE::T_STRING:
+					case VAR_TYPE::_STRING:
 					{
 						text += "<" + *(string*)item->value + ">";
 						break;
 					}
-					case VAR_TYPE::T_BOOL:
+					case VAR_TYPE::_BOOL:
 					{
 						BOOL value = *(BOOL*)item->value;
 						string final;
@@ -270,7 +270,7 @@ VOID D3Menu::handleInput()
 		{
 			PMENUITEM item = items[menuStep];
 
-			if (item->type == VAR_TYPE::T_BOOL && item->value != nullptr)
+			if (item->type == VAR_TYPE::_BOOL && item->value != nullptr)
 			{
 				bool* value = (bool*)item->value;
 				*value = !*value;
@@ -287,7 +287,7 @@ VOID D3Menu::handleInput()
 		} else {
 			PMENUITEM item = items[step - menus.size()];
 
-			if (item->type == VAR_TYPE::T_BOOL && item->value != nullptr)
+			if (item->type == VAR_TYPE::_BOOL && item->value != nullptr)
 			{
 				bool* value = (bool*)item->value;
 				*value = !*value;
@@ -399,7 +399,7 @@ PMENUITEM D3Menu::createToggle(string itemName, LPVOID value, DWORD color, LPVOI
 	}
 
 	toggle->threaded		= threaded;
-	toggle->type			= VAR_TYPE::T_BOOL;
+	toggle->type			= VAR_TYPE::_BOOL;
 
 	items.push_back( toggle );
 	return toggle;
@@ -416,7 +416,7 @@ PMENUITEM D3Menu::createToggle(string menuName, string itemName, LPVOID value, D
 		item->color = D3DCOLOR_ARGB(255, 0, 153, 204);
 	} else { item->color = color; }
 
-	item->type = VAR_TYPE::T_BOOL;
+	item->type = VAR_TYPE::_BOOL;
 	item->callback	= callback;
 
 	if (value != nullptr) {
@@ -450,7 +450,7 @@ PMENUITEM D3Menu::createToggle(PMENUENTRY menu, string itemName, LPVOID value, D
 		item->color = D3DCOLOR_ARGB(255, 0, 153, 204);
 	} else { item->color = color; }
 
-	item->type = VAR_TYPE::T_BOOL;
+	item->type = VAR_TYPE::_BOOL;
 	item->callback = callback;
 
 	if (value != nullptr) {
@@ -750,7 +750,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 		{
 			switch (item->type)
 			{
-				case VAR_TYPE::T_INT:
+				case VAR_TYPE::_INT:
 				{
 					if (item->stepCallback != nullptr)
 					{
@@ -762,7 +762,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 					*(INT*)item->value -= item->increment;
 					break;
 				}
-				case VAR_TYPE::T_FLOAT:
+				case VAR_TYPE::_FLOAT:
 				{
 					if (item->stepCallback != nullptr)
 					{
@@ -774,7 +774,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 					*(FLOAT*)item->value -= item->increment;
 					break;
 				}
-				case VAR_TYPE::T_STRING:
+				case VAR_TYPE::_STRING:
 				{
 					if (item->stepCallback != nullptr)
 					{
@@ -821,7 +821,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 			{
 				switch (item->type)
 				{
-					case VAR_TYPE::T_INT:
+					case VAR_TYPE::_INT:
 					{
 						if (item->stepCallback != nullptr)
 						{
@@ -833,7 +833,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 						*(INT*)item->value += item->increment;
 						break;
 					}
-					case VAR_TYPE::T_FLOAT:
+					case VAR_TYPE::_FLOAT:
 					{
 						if (item->stepCallback != nullptr)
 						{
@@ -845,7 +845,7 @@ VOID D3Menu::changeValue(DWORD vkCode)
 						*(FLOAT*)item->value += item->increment;
 						break;
 					}
-					case VAR_TYPE::T_STRING:
+					case VAR_TYPE::_STRING:
 					{
 						if (item->stepCallback != nullptr)
 						{

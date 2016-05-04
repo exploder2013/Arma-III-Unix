@@ -92,22 +92,22 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// VISION
 	PMENUENTRY vision = d3d9.createMenu( "Vision", NULL );
-	d3d9.createItem( vision,"XRAY", new FLOAT(1000), NULL, 100, VAR_TYPE::T_FLOAT, render, nullptr, true );
+	d3d9.createItem( vision,"XRAY", new FLOAT(1000), NULL, 100, VAR_TYPE::_FLOAT, render, nullptr, true );
 	d3d9.createToggle( vision, "Display players", &displayPlayers, NULL, nullptr, false );
 	d3d9.createToggle( vision, "Cars", &displayCars, NULL, nullptr, false );
 	d3d9.createToggle( vision, "Empty cars", &displayEmptyCars, NULL, nullptr, false );
 	d3d9.createToggle( vision, "Other teams", &displayTeam, NULL, nullptr, false );
 
 	//POSITION
-	d3d9.createItem("Teleport",new INT(1), NULL, 1, VAR_TYPE::T_INT, teleport, nullptr, true ); 
-	d3d9.createItem("Unsafe Teleport",new INT(1), NULL, 1, VAR_TYPE::T_INT, teleportUnsafe, nullptr, true ); 
+	d3d9.createItem("Teleport", new INT(1), NULL, 1, ::VAR_TYPE::_INT, teleport, nullptr, true ); 
+	d3d9.createItem("Unsafe Teleport",new INT(1), NULL, 1, ::VAR_TYPE::_INT, teleportUnsafe, nullptr, true ); 
 
 	//FRAMES
 	//d3d9.createItem("Frame Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING, framePlayer, setPlayer, true);
 	//d3d9.createItem("Kill Player", new string[250], NULL, NULL, VAR_TYPE::T_STRING, killPlayer, setPlayer, true);
 
 	//OTHER
-	d3d9.createItem( "Open Vehicle", NULL, NULL, 0, VAR_TYPE::T_INT, unlockCar, nullptr, false );
+	d3d9.createItem( "Open Vehicle", nullptr, NULL, 0, ::VAR_TYPE::_INT, unlockCar, nullptr, false );
 
 	logger.registerInput(inputHanlder);
 	logger.handleInput();

@@ -117,13 +117,13 @@ void unlockCar( LPVOID value, bool* enabled  )
 void setDamage( LPVOID value, bool* enabled ){
 	auto			world = World::Singleton();
 	auto			locPlayer = world->getCameraOn()->getUnit();
-	int				prevItemValue = 0;
+	float			prevItemValue = 0;
 
 	DWORD wID = locPlayer->getWeaponID(), wPtr = 0;
 	DWORD offsets[ 3 ] = { ( wID * 0x24 + 0x4 ), 0x8, 0x200 };
 
 	wPtr = m->readPointer<DWORD>( locPlayer->getBase() + 0x694, offsets, 3 );
-	prevItemValue = (int) m->read<float>( wPtr + 0x140 );
+	prevItemValue = m->read<float>( wPtr + 0x140 );
 
 	m->write( wPtr + 0x140, *(float*)value );
 	*(float*)value = prevItemValue;
